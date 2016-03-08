@@ -27,19 +27,6 @@ namespace Private
     private:
       cv::Mat m_image;
     };
-    
-    class BarcodeChannelImpl : public ::Camera::ChannelImpl
-    {
-    public:
-      BarcodeChannelImpl();
-      virtual void update(const cv::Mat &image);
-      virtual ::Camera::ObjectVector findObjects(const Config &config);
-
-    private:
-      cv::Mat m_gray;
-      zbar::Image m_image;
-      zbar::ImageScanner m_scanner;
-    };
   }
 }
 

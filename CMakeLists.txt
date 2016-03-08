@@ -20,7 +20,6 @@ include_directories(${INCLUDE})
 
 file(GLOB SOURCES ${SRC}/*.cpp)
 file(GLOB C_TESTS tests/*.c)
-file(GLOB PIXELTOASTER_SOURCES ${PIXELTOASTER}/*.cpp)
 
 # Cross-compile
 # set(CMAKE_CXX_COMPILER arm-linux-gnueabihf-g++)
@@ -41,21 +40,6 @@ else()
 endif()
 
 
-# REMOVE ME
-include_directories(${SRC}/pixeltoaster)
-
-#############################
-#   PixelToaster settings   #
-#############################
-
-if(APPLE)
-	file(GLOB OBJC_SOURCES ${PIXELTOASTER}/*.mm)
-elseif(WIN32)
-	add_definitions(-fno-check-new)
-endif()
-
-
-
 if(DEFINED ENV{OPENCV_INCLUDE_DIR})
   set(OPENCV_INCLUDE $ENV{OPENCV_INCLUDE_DIR})
 elseif(WIN32)
@@ -66,12 +50,6 @@ if(DEFINED ENV{OPENCV_LIB_DIR})
   set(OPENCV_LIB $ENV{OPENCV_LIB_DIR})
 elseif(WIN32)
   set(OPENCV_LIB ${CMAKE_SOURCE_DIR}/../opencv/build/install/x86/vc11/lib)
-endif()
-
-if(DEFINED ENV{ZBAR_DIR})
-  set(ZBAR_DIR $ENV{ZBAR_DIR})
-elseif(WIN32)
-  set(ZBAR_DIR "C:/Program Files (x86)/ZBar")
 endif()
 
 find_package( OpenCV REQUIRED )
@@ -90,10 +68,9 @@ link_directories(${ZBAR_DIR}/lib)
 
 
 # Library: libwallaby
-add_library(wallaby SHARED
-	${SOURCES} ${PIXELTOASTER_SOURCES} ${OBJC_SOURCES})
+add_library(wallaby SHARED ${SOURCES} ${OBJC_SOURCES})
   
-target_link_libraries(wallaby ${OpenCV_LIBS} ${JPEG_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} zbar)
+target_link_libraries(wallaby ${OpenCV_LIBS} ${JPEG_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 if(APPLE)
   find_library(OPENGL_LIBRARY OpenGL)
@@ -103,7 +80,7 @@ if(APPLE)
 endif()
 
 if(UNIX AND NOT APPLE)
-    target_link_libraries(wallaby rt X11)
+    target_link_libraries(wallaby rt)
 endif()
 
 
